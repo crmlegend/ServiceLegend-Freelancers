@@ -23,9 +23,6 @@ jobs:
           submodules: true
           lfs: false
 
-      # The actions/setup-node@v3 step is useful for general GitHub Actions context,
-      # but we will now explicitly define Node.js version for Oryx build using NODE_VERSION env var.
-      # This step is still good practice for other potential workflow steps that might need Node.js.
       - name: Use Node.js 20.x (for general workflow context)
         uses: actions/setup-node@v3
         with:
@@ -47,34 +44,13 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_FIELD_048DEDF10 }}
           action: "upload"
-          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
-          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "/" # App source code path
-          api_location: "" # Api source code path - optional
-          output_location: "dist" # Built app content directory - for Vite, this is 'dist'
+          app_location: "/"
+          api_location: ""
+          # Ensure output_location is 'dist' for Vite
+          output_location: "dist"
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          # Removed "nvm install" from app_build_command as nvm is not available.
-          # We will rely on NODE_VERSION environment variable for Oryx.
-          app_build_command: "npm install && npm run build"
-          # IMPORTANT: Move 'env' block to be a direct child of the 'Build And Deploy' step,
-          # at the same level as 'with:', 'id:', and 'uses:'. This is the correct YAML structure
-          # for step-level environment variables in GitHub Actions.
-        env: # <--- Moved env block here, at the same indentation level as 'with:'
+          # IMPORTANT: Modify app_build_command to ensure npm install runs before build.
+          # This is to explicitly ensure dependencies are available for Vite.
+          app_build_command: "npm install --force && npm run build" # Added --force to npm install
+        env:
           NODE_VERSION: "20.x"
-          # If you had an API, you might also need:
-          # api_build_command: "npm install && npm run build"
-          # api_location: "api" # Example API folder
-          # env:
-          #   NODE_VERSION: "20.x" # For API as well
-          ###### End of Repository/Build Configurations ######
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          action: "close"
