@@ -46,11 +46,10 @@ jobs:
           action: "upload"
           app_location: "/"
           api_location: ""
-          # Ensure output_location is 'dist' for Vite
-          output_location: "dist"
+          output_location: "dist" # Ensure output_location is 'dist' for Vite
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          # IMPORTANT: Modify app_build_command to ensure npm install runs before build.
-          # This is to explicitly ensure dependencies are available for Vite.
-          app_build_command: "npm install --force && npm run build" # Added --force to npm install
+          # IMPORTANT: Modified app_build_command for a more robust installation and build.
+          # This sequence ensures a clean npm cache and re-installation.
+          app_build_command: "npm cache clean --force && npm install --force && npm run build"
         env:
           NODE_VERSION: "20.x"
