@@ -56,11 +56,11 @@ jobs:
           # Removed "nvm install" from app_build_command as nvm is not available.
           # We will rely on NODE_VERSION environment variable for Oryx.
           app_build_command: "npm install && npm run build"
-          # IMPORTANT: Add NODE_VERSION environment variable to ensure Oryx uses Node.js 20.
-          # This is the most reliable way to set Node.js version for Oryx builds.
-          # Ensure 'env' is at the same indentation level as 'azure_static_web_apps_api_token', 'action', etc.
-          env:
-            NODE_VERSION: "20.x"
+          # IMPORTANT: Move 'env' block to be a direct child of the 'Build And Deploy' step,
+          # at the same level as 'with:', 'id:', and 'uses:'. This is the correct YAML structure
+          # for step-level environment variables in GitHub Actions.
+        env: # <--- Moved env block here, at the same indentation level as 'with:'
+          NODE_VERSION: "20.x"
           # If you had an API, you might also need:
           # api_build_command: "npm install && npm run build"
           # api_location: "api" # Example API folder
