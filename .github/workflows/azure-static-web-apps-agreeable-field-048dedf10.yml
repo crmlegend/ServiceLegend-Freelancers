@@ -30,6 +30,12 @@ jobs:
 
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
+
+      # IMPORTANT: Add a dedicated step to install lucide-react explicitly.
+      # This is a workaround for persistent "ENOENT" errors for specific packages.
+      - name: Install Lucide React Explicitly
+        run: npm install lucide-react --prefix . --legacy-peer-deps
+
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
@@ -48,12 +54,11 @@ jobs:
           api_location: ""
           output_location: "dist" # Ensure output_location is 'dist' for Vite
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          # IMPORTANT: Modified app_build_command for an even more explicit installation path.
-          # This sequence ensures the node_modules directory is created before installation.
+          # IMPORTANT: Modified app_build_command to remove npm install, as it's now in a separate step.
+          # We keep cache clean and mkdir just in case for other dependencies, but focus on the build.
           app_build_command: |
             npm cache clean --force
             mkdir -p node_modules # Ensure node_modules directory exists
-            npm install --prefix . --legacy-peer-deps
             npm run build
         env:
           NODE_VERSION: "20.x"
