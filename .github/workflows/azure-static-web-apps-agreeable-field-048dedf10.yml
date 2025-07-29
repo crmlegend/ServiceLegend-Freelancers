@@ -58,6 +58,7 @@ jobs:
           app_build_command: "npm install && npm run build"
           # IMPORTANT: Add NODE_VERSION environment variable to ensure Oryx uses Node.js 20.
           # This is the most reliable way to set Node.js version for Oryx builds.
+          # Ensure 'env' is at the same indentation level as 'azure_static_web_apps_api_token', 'action', etc.
           env:
             NODE_VERSION: "20.x"
           # If you had an API, you might also need:
