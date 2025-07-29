@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: ['lucide-react'], // Add lucide-react to external dependencies
+      // Removed 'lucide-react' from external.
+      // It should be bundled with the application for client-side use.
+      // The previous 'crypto.hash' error was due to Node.js version,
+      // which is now handled by NODE_VERSION in GitHub Actions.
+      external: [],
     },
   },
 })
