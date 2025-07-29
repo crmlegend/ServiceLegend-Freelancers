@@ -32,7 +32,8 @@ function App() {
   )
 }
 
-export default App */
+export default App 
+*/
 
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Search, SlidersHorizontal, Briefcase, DollarSign, Clock, ChevronDown, ChevronUp, User, Bell, MessageSquare, LogOut, Sun, Moon, Settings, Calendar, Video, BookOpen, ExternalLink, UserPlus, Shield, CheckCircle, ArrowRight, VideoOff, Mic, ScreenShare, PlayCircle, PauseCircle, AlertTriangle, Award, Paperclip, Tags, Link as LinkIcon, X, ChevronLeft, ChevronRight, Monitor, FileText, Plus, PhoneCall, Video as VideoIcon } from 'lucide-react';
