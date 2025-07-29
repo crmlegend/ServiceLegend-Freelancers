@@ -48,9 +48,12 @@ jobs:
           api_location: ""
           output_location: "dist" # Ensure output_location is 'dist' for Vite
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          # IMPORTANT: Modified app_build_command for a very robust installation and build.
-          # This ensures dependencies are installed directly before the build command,
-          # within the context of the build step.
-          app_build_command: "npm install --legacy-peer-deps && npm run build"
+          # IMPORTANT: Modified app_build_command for a very explicit and clean installation.
+          # This sequence ensures a fresh npm cache, re-installation, and then the build.
+          # It also explicitly sets the working directory for npm commands if needed.
+          app_build_command: |
+            npm cache clean --force
+            npm install --prefix . --legacy-peer-deps
+            npm run build
         env:
           NODE_VERSION: "20.x"
