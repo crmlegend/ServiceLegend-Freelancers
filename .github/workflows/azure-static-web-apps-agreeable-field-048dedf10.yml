@@ -23,8 +23,9 @@ jobs:
           submodules: true
           lfs: false
 
-      # The actions/setup-node@v3 step is still useful for general GitHub Actions context,
-      # but we will explicitly define Node.js version for Oryx build below.
+      # The actions/setup-node@v3 step is useful for general GitHub Actions context,
+      # but we will now explicitly define Node.js version for Oryx build using NODE_VERSION env var.
+      # This step is still good practice for other potential workflow steps that might need Node.js.
       - name: Use Node.js 20.x (for general workflow context)
         uses: actions/setup-node@v3
         with:
@@ -52,11 +53,18 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "dist" # Built app content directory - for Vite, this is 'dist'
           github_id_token: ${{ steps.idtoken.outputs.result }}
-          # IMPORTANT: Explicitly define the app_build_command to ensure Node.js 20 is used by Oryx.
-          # This command will be executed within the Node.js 20 environment.
-          app_build_command: "nvm install 20 && nvm use 20 && npm install && npm run build"
+          # Removed "nvm install" from app_build_command as nvm is not available.
+          # We will rely on NODE_VERSION environment variable for Oryx.
+          app_build_command: "npm install && npm run build"
+          # IMPORTANT: Add NODE_VERSION environment variable to ensure Oryx uses Node.js 20.
+          # This is the most reliable way to set Node.js version for Oryx builds.
+          env:
+            NODE_VERSION: "20.x"
           # If you had an API, you might also need:
-          # api_build_command: "nvm install 20 && nvm use 20 && npm install && npm run build"
+          # api_build_command: "npm install && npm run build"
+          # api_location: "api" # Example API folder
+          # env:
+          #   NODE_VERSION: "20.x" # For API as well
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
