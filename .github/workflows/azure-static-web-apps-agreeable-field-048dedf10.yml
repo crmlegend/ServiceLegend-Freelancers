@@ -23,13 +23,12 @@ jobs:
           submodules: true
           lfs: false
 
-      # Add this step to specify the Node.js version
-      # This ensures a compatible Node.js version is used for Vite builds.
-      # Vite 7.0.6 requires Node.js ^20.19.0 || >=22.12.0
-      - name: Use Node.js 20.x
+      # The actions/setup-node@v3 step is still useful for general GitHub Actions context,
+      # but we will explicitly define Node.js version for Oryx build below.
+      - name: Use Node.js 20.x (for general workflow context)
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x' # Using Node.js 20 LTS, which is compatible with Vite 7.0.6
+          node-version: '20.x'
 
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
@@ -51,9 +50,13 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/" # App source code path
           api_location: "" # Api source code path - optional
-          # IMPORTANT: Changed output_location from "build" to "dist" for Vite projects.
           output_location: "dist" # Built app content directory - for Vite, this is 'dist'
           github_id_token: ${{ steps.idtoken.outputs.result }}
+          # IMPORTANT: Explicitly define the app_build_command to ensure Node.js 20 is used by Oryx.
+          # This command will be executed within the Node.js 20 environment.
+          app_build_command: "nvm install 20 && nvm use 20 && npm install && npm run build"
+          # If you had an API, you might also need:
+          # api_build_command: "nvm install 20 && nvm use 20 && npm install && npm run build"
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
